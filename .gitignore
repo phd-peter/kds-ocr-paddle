@@ -8,3 +8,15 @@ wheels/
 
 # Virtual environments
 .venv
+
+# aisc 코드원문
+aisc360-22/
+
+# Generated Output Folders
+output*/
+aisc360-22-markdown/
+
+# OS files
+.DS_Store
+**/ .DS_Store
+**/._*

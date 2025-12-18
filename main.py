@@ -8,7 +8,8 @@ import certifi
 API_URL = "https://oeocy5w7q4f7ufe1.aistudio-app.com/layout-parsing"
 TOKEN = "891405228ff58e8d5b37fd3adee87616227fe625"
 
-file_path = "test-for-ocr.png"
+file_path = "input/KDS143110-5.pdf"
+output_dir = "output-5"
 
 with open(file_path, "rb") as file:
     file_bytes = file.read()
@@ -22,19 +23,18 @@ headers = {
 # For PDF documents, set `fileType` to 0; for images, set `fileType` to 1
 payload = {
     "file": file_data,
-    "fileType": 1,
+    "fileType": 0,
     "useDocOrientationClassify": False,
     "useDocUnwarping": False,
     "useChartRecognition": False,
 }
 
-# certifi의 CA 번들 사용
 response = requests.post(API_URL, json=payload, headers=headers)
 print(response.status_code)
 assert response.status_code == 200
 result = response.json()["result"]
 
-output_dir = "output"
+
 os.makedirs(output_dir, exist_ok=True)
 
 for i, res in enumerate(result["layoutParsingResults"]):
