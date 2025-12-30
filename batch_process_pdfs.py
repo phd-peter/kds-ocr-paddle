@@ -5,8 +5,8 @@ import requests
 API_URL = "https://oeocy5w7q4f7ufe1.aistudio-app.com/layout-parsing"
 TOKEN = "891405228ff58e8d5b37fd3adee87616227fe625"
 
-INPUT_DIR = "aisc360-22"
-OUTPUT_ROOT = "aisc360-22-markdown"
+INPUT_DIR = "data/chunks/design-parsed"
+OUTPUT_ROOT = "data/output/design-parsed"
 
 def process_file(file_path, output_dir):
     print(f"Processing: {file_path} -> {output_dir}")
@@ -30,7 +30,8 @@ def process_file(file_path, output_dir):
     }
 
     try:
-        response = requests.post(API_URL, json=payload, headers=headers)
+        # Note: Added verify=False as a workaround for local certificate verification issues.
+        response = requests.post(API_URL, json=payload, headers=headers, verify=False)
         print(f"Status Code: {response.status_code}")
         
         if response.status_code != 200:
@@ -49,13 +50,13 @@ def process_file(file_path, output_dir):
             for img_path, img in res["markdown"]["images"].items():
                 full_img_path = os.path.join(output_dir, img_path)
                 os.makedirs(os.path.dirname(full_img_path), exist_ok=True)
-                img_bytes = requests.get(img).content
+                img_bytes = requests.get(img, verify=False).content
                 with open(full_img_path, "wb") as img_file:
                     img_file.write(img_bytes)
                 print(f"Image saved to: {full_img_path}")
                 
             for img_name, img in res["outputImages"].items():
-                img_response = requests.get(img)
+                img_response = requests.get(img, verify=False)
                 if img_response.status_code == 200:
                     # Save image to local
                     filename = os.path.join(output_dir, f"{img_name}_{i}.jpg")
